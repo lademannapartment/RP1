@@ -1,4 +1,4 @@
-name: rp1
+name: RP1
 
 on:
   workflow_dispatch: # Оставляем только эту настройку для ручного запуска
