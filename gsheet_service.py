@@ -97,7 +97,7 @@ def find_row_by_date(ws, target_date: dt.date, retries: int = 3):
                   f"(попытка {attempt}/{retries}): {e}")
             time.sleep(2)
     raise RuntimeError(f"❌ Не удалось получить данные из Google Sheets для даты {target_date}")
-
+SHEET_NAME_PBN = "Rank PBN"
 # ---------------------------------------------
 # Обновление данных в Google Sheet
 # ---------------------------------------------
@@ -109,46 +109,81 @@ def update_spreadsheet_data(
         city_name: str,
         mmrent_count: int = None,
 ):
-    data_to_run = []
+    data_to_run_main = []  # Для основного листа
+    data_to_run_pbn = []  # Для листа Rank PBN
 
-    # НОВЫЙ БЛОК: Создаем нормализованную карту рангов (без лишних пробелов)
-    # Это гарантирует, что "Stitch Room" совпадет с "Stitch Room "
+    # Нормализованная карта рангов
     norm_ranks = {str(k).strip(): v for k, v in ranks_map.items() if v is not None}
 
-    # 1. Обрабатываем ВСЕ листинги из карты
+    # Список всех найденных рангов наших объектов (для вычитания)
+    our_found_ranks = sorted([v for v in norm_ranks.values()])
+
+    # Инициализируем лист PBN только если это Гданьск
+    ws_pbn = None
+    if city_name == "Гданьск":
+        ws_pbn = initialize_gspread(SHEET_NAME_PBN)
+
     for listing_title, col_idx in listings_map.items():
         clean_title = str(listing_title).strip()
-        rank = norm_ranks.get(clean_title)  # Ищем в нормализованной карте
+        rank = norm_ranks.get(clean_title)
 
         col_letter = col_to_letter(col_idx)
-        value_to_write = rank if rank is not None else ""
 
-        # ЛОГ ДЛЯ ТЕСТА (можно потом убрать)
-        if rank:
-            print(f"      📝 Подготовка записи: {clean_title} -> {col_letter}{row_index} (Ранг: {rank})")
+        # --- ЛОГИКА ОЧИСТКИ И ЗАПИСИ ---
+        if rank is not None:
+            # 1. Основной ранг (как есть)
+            data_to_run_main.append({
+                'range': f"{col_letter}{row_index}",
+                'values': [[rank]]
+            })
 
-        data_to_run.append({
-            'range': f"{col_letter}{row_index}",
-            'values': [[value_to_write]]
-        })
+            # 2. Логика для Rank PBN (только Гданьск)
+            if ws_pbn:
+                # Считаем сколько НАШИХ объектов выше (ранг меньше текущего)
+                higher_than_us = len([r for r in our_found_ranks if r < rank])
+                pbn_rank = rank - higher_than_us
 
-    # 2. Подготовка MMRent Count (только для Гданьска)
+                data_to_run_pbn.append({
+                    'range': f"{col_letter}{row_index}",
+                    'values': [[pbn_rank]]
+                })
+                print(f"      📊 PBN пересчет: {clean_title} -> {rank} - {higher_than_us} = {pbn_rank}")
+        else:
+            # ЕСЛИ НЕ НАШЛИ - ОЧИЩАЕМ ЯЧЕЙКИ (удаляем старый скан)
+            data_to_run_main.append({
+                'range': f"{col_letter}{row_index}",
+                'values': [[""]]
+            })
+            if ws_pbn:
+                data_to_run_pbn.append({
+                    'range': f"{col_letter}{row_index}",
+                    'values': [[""]]
+                })
+
+    # --- ОТПРАВКА В ТАБЛИЦУ ---
+
+    # Обновляем основной лист
+    if data_to_run_main:
+        try:
+            ws.batch_update(data_to_run_main, value_input_option='USER_ENTERED')
+            print(f"✅ [GSheets] {city_name}: Основной лист обновлен (с очисткой ненайденных).")
+        except Exception as e:
+            print(f"❌ Ошибка основного листа {city_name}: {e}")
+
+    # Обновляем лист Rank PBN (только Гданьск)
+    if ws_pbn and data_to_run_pbn:
+        try:
+            ws_pbn.batch_update(data_to_run_pbn, value_input_option='USER_ENTERED')
+            print(f"✅ [GSheets] {city_name}: Лист Rank PBN обновлен.")
+        except Exception as e:
+            print(f"❌ Ошибка листа Rank PBN: {e}")
+
+    # 3. MMRent Count (только Гданьск)
     if city_name == "Гданьск" and mmrent_count is not None:
         try:
-            from config_listings import MMRENT_COUNT_COLUMN_GDANSK
             mmrent_col_letter = col_to_letter(MMRENT_COUNT_COLUMN_GDANSK)
-            data_to_run.append({
-                'range': f"{mmrent_col_letter}{row_index}",
-                'values': [[mmrent_count]]
-            })
-        except ImportError:
-            print("   ⚠️ Не удалось импортировать MMRENT_COUNT_COLUMN_GDANSK")
-
-    # Выполняем пакетное обновление
-    if data_to_run:
-        try:
-            # Используем 'USER_ENTERED', чтобы числа записывались как числа, а не текст
-            ws.batch_update(data_to_run, value_input_option='USER_ENTERED')
-            print(f"✅ [GSheets] {city_name}: Данные успешно отправлены в таблицу.")
+            ws.update(range_name=f"{mmrent_col_letter}{row_index}",
+                      values=[[mmrent_count]],
+                      value_input_option='USER_ENTERED')
         except Exception as e:
-            print(f"❌ Ошибка пакетного обновления {city_name}: {e}")
+            print(f"   ⚠️ Ошибка записи MMRent: {e}")
