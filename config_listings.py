@@ -13,7 +13,7 @@ STAY_NIGHTS = 1
 TIMEOUT_SEC = 60
 DAYS_FORWARD = 60
 MAX_RANK = 400
-CREDENTIALS_FILE = "dailyranking.json"
+CREDENTIALS_FILE = "silken-glyph-443313-i4-86edc01b6c81.json"
 
 # --- ЛИСТИНГИ ГДАНЬСКА (GDANSK) ---
 MMRENT_COUNT_COLUMN_GDANSK = 3
