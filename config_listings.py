@@ -98,6 +98,17 @@ LISTING_COLUMNS_GDANSK = {
     "Ruby Room at Old Town Gdańsk": 87,
     "Silver Room at Old Town Gdańsk": 88,
     "Bronze Room at Old Town Gdańsk": 89,
+    "Mercury Room - 15 min to Old Town Gdansk": 90,
+    "Hostel Room - 15 min to Old Town Gdansk": 91,
+    "Earth Room - 15 min to Old Town Gdansk": 92,
+    "Mars Room - 15 min to Old Town Gdansk": 93,
+    "Jupiter Room - 15 min to Old Town Gdansk": 94,
+    "Saturn Room - 15 min to Old Town Gdansk": 95,
+    "Uranus Room - 15 min to Old Town Gdansk": 96,
+    "Neptune Room - 15 min to Old Town Gdansk": 97,
+    "Pluto Room - 15 min to Old Town Gdansk": 98,
+    "Milkyway Room - 15 min to Old Town Gdansk": 99,
+    "Sunlight Room - 15 min to Old Town Gdansk": 100,
 }
 
 # --- ЛИСТИНГИ СОПОТА (SOPOT) ---
