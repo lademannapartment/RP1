@@ -13,7 +13,7 @@ STAY_NIGHTS = 1
 TIMEOUT_SEC = 60
 DAYS_FORWARD = 60
 MAX_RANK = 400
-CREDENTIALS_FILE = "silken-glyph-443313-i4-86edc01b6c81.json"
+CREDENTIALS_FILE = "silken-glyph-443313-i4-cdf14b36288a.json"
 
 # --- ЛИСТИНГИ ГДАНЬСКА (GDANSK) ---
 MMRENT_COUNT_COLUMN_GDANSK = 3
