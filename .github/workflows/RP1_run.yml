@@ -7,7 +7,7 @@ on:
     - cron: '0 4 */3 * *'
   
   workflow_dispatch:
-    # Эта строка оставляет кнопку для ручного запуска в любое время
+    # Кнопка для ручного запуска
 
 jobs:
   run-script:
@@ -15,12 +15,16 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5  # Обновили до v5
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6 # Обновлили до v6
         with:
           python-version: '3.11'
+
+      # Декодируем секрет в JSON файл, который ждет скрипт
+      - name: Decode Google Credentials
+        run: echo "${{ secrets.G_KEYS_BASE64 }}" | base64 --decode > silken-glyph-443313-i4-cdf14b36288a.json
 
       - name: Install dependencies
         run: |
@@ -30,3 +34,6 @@ jobs:
 
       - name: Run Python script
         run: python ranking_scraper_main.py
+        env:
+          # Пробрасываем путь к файлу в окружение
+          GOOGLE_APPLICATION_CREDENTIALS: silken-glyph-443313-i4-cdf14b36288a.json
