@@ -20,7 +20,7 @@ MMRENT_COUNT_COLUMN_GDANSK = 3
 # СВЯЗКА: Название листинга -> Индекс столбца (начиная с I=9)
 LISTING_COLUMNS_GDANSK = {
     "Cactus Room 10 Min to Old Town Gdańsk,PKP & Shopping Mall": 9,
-    "Pineapple Room": 10,
+    "Pineapple Room 10 Min to Old Town Gdańsk,PKP & Shopping Mall": 10,
     "Jager Room 10 Min to Old Town Gdańsk,PKP & Shopping Mall": 11,
     "Cosy Room - Peaceful Retreat, 2 Minutes to Gdańsk Old Town": 12,
     "Lovely Room - Peaceful Retreat, 2 Minutes to Gdańsk Old Town": 13,
