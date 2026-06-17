@@ -109,6 +109,22 @@ LISTING_COLUMNS_GDANSK = {
     "Pluto Room - 15 min to Old Town Gdansk": 98,
     "Milkyway Room - 15 min to Old Town Gdansk": 99,
     "Sunlight Room - 15 min to Old Town Gdansk": 100,
+    "Empire Room - 15 Minutes to Gdańsk Old Town & Seaside & Airport": 101,
+    "Droid Room - 15 Minutes to Gdańsk Old Town & Seaside & Airport": 102,
+    "Stormley Room - 15 Minutes to Gdańsk Old Town & Seaside & Airport": 103,
+    "Partyzantów 56, Gdańsk": 104,
+    "Bounty Room - 15 Minutes to Gdańsk Old Town & Seaside & Airport": 105,
+    "Sir Yodington Room - 15 Minutes to Gdańsk Old Town & Seaside & Airport": 106,
+    "Cinque Terre Guest Room - at Old Town Gdansk": 107,
+    "Verona Guest Room - at Old Town Gdansk": 108,
+    "Lisbon Guest Room - at Old Town Gdansk": 109,
+    "Lucca Guest Room - at Old Town Gdansk": 110,
+    "Adore Room - at Old Town Gdansk": 111,
+    "Ballerina's Room - at Old Town Gdansk": 112,
+    "Rosie Room - at Old Town Gdansk": 113,
+    "Seredino Room 4 - at Old Town Gdansk": 114,
+    "Petite Room - at Old Town Gdansk": 115,
+    "Atelier Room - at Old Town Gdansk": 116,
 }
 
 # --- ЛИСТИНГИ СОПОТА (SOPOT) ---
@@ -125,4 +141,8 @@ LISTING_COLUMNS_GDYNIA = {
     "Blue Room 2 minutes to City Center Gdynia & Seaside": 6,
     "Green Room 2 minutes to City Center Gdynia & Seaside": 7,
     "Orange Room 2 minutes to City Center Gdynia & Seaside": 8,
+    "Marina Room at City Center Gdynia & Seaside": 9,
+    "Captain's Room at City Center Gdynia & Seaside": 10,
+    "Sail Room at City Center Gdynia & Seaside": 11,
+    "Harbor Room at City Center Gdynia & Seaside": 12,
 }
