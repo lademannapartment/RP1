@@ -58,7 +58,7 @@ LISTING_COLUMNS_GDANSK = {
     "Spongebob Room 10 Min to Old Town Gdańsk,PKP & Shopping Mall": 47,
     "Big Ben Room - Peaceful Retreat, 10 Minutes to Gdańsk Old Town & Seaside": 48,
     "Cracov Room - Peaceful Retreat, 10 Minutes to Gdańsk Old Town & Seaside": 49,
-    "Breslau Room - Peaceful Retreat, 10 Minutes to Gdańsk Old Town & Seaside": 50,
+    "Breslau Room - Peaceful Retreat, 15 Minutes to Gdańsk Old Town & Seaside": 50,
     "Manhattan Room - Peaceful Retreat, 10 Minutes to Gdańsk Old Town & Seaside": 51,
     "Roma Room - Peaceful Retreat, 10 Minutes to Gdańsk Old Town & Seaside": 52,
     "Motlava Room - Peaceful Retreat, 10 Minutes to Gdańsk Old Town & Seaside": 53,
