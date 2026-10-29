@@ -35,7 +35,7 @@ LISTING_COLUMNS_GDANSK = {
     "Nest Room - 20 Minutes to Gdańsk Old Town & Seaside": 22,
     "Square Room - 20 Minutes to Gdańsk Old Town & Seaside": 23,
     "Twig Room - 20 Minutes to Gdańsk Old Town & Seaside": 24,
-    "Alpha Room 10 min to Old Town Gdansk": 25,
+    "Alpha Room 15 min to Old Town Gdansk": 25,
     "Beta Room 10 min to Old Town Gdansk": 26,
     "Gamma Room 10 min to Old Town Gdansk": 27,
     "Downtown Room at Old Town Gdansk": 28,
