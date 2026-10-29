@@ -1,6 +1,6 @@
 import asyncio
 import datetime as dt
-from typing import Tuple, Dict
+from typing import Tuple, Dict, Optional
 from playwright.async_api import Page, TimeoutError
 from config_listings import STAY_NIGHTS, MAX_RANK
 import re
@@ -106,7 +106,8 @@ def build_gdynia_apartments_url(checkin: dt.date, checkout: dt.date) -> str:
 #              CORE SCRAPING LOGIC
 # ============================================================
 
-async def scrape_cards_and_get_ranks(page: Page, listings_map: dict, MAX_RANK: int = 400) -> Tuple[Dict[str, int], int]:
+async def scrape_cards_and_get_ranks(page: Page, listings_map: dict, MAX_RANK: int = 400) -> Tuple[Optional[Dict[str, int]], int]:
+    """Возвращает (ranks_map, mmrent_count). ranks_map = None, если карточки не загрузились."""
     import html
     import re
 
@@ -134,7 +135,7 @@ async def scrape_cards_and_get_ranks(page: Page, listings_map: dict, MAX_RANK: i
         await page.wait_for_selector(PROPERTY_CARD_SELECTOR, timeout=30000)
     except:
         print("   ⚠️ Карточки не появились на странице.")
-        return found_ranks, 0
+        return None, 0
 
     # Используем фиксированное количество итераций (как в вашем примере),
     # но с условиями выхода
@@ -187,7 +188,8 @@ async def scrape_cards_and_get_ranks(page: Page, listings_map: dict, MAX_RANK: i
             retries += 1
 
         # Выход, если всё нашли или достигли лимита
-        if not remaining_to_find or already_scanned_count >= MAX_RANK or retries >= 10:
+        # Останавливаемся, если всё найдено, достигнут лимит или 4 итерации подряд нет новых карточек
+        if not remaining_to_find or already_scanned_count >= MAX_RANK or retries >= 4:
             break
 
         # 4. Попытка нажать кнопку "Показать еще"

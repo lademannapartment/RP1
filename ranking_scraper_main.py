@@ -41,7 +41,16 @@ async def process_date_for_city(
 ):
     print(f"\n>>>> ДАТА: {date_obj.strftime('%d.%m.%Y')}  —  {city_name} <<<<")
 
-    row_index = find_row_by_date(ws, date_obj)
+    if ws is None:
+        print(f"⚠️ Лист для {city_name} не открыт. Пропуск {date_obj.strftime('%d.%m.%Y')}.")
+        return
+
+    try:
+        row_index = find_row_by_date(ws, date_obj)
+    except RuntimeError as e:
+        print(f"❌ {e}. Пропуск.")
+        return
+
     if not row_index:
         print(f"⚠️ Дата {date_obj.strftime('%d.%m.%Y')} отсутствует в листе {ws.title}. Пропуск.")
         return
@@ -65,6 +74,11 @@ async def process_date_for_city(
             pass
 
         ranks_map, mmrent_count = await scrape_cards_and_get_ranks(page, listings_map)
+
+        # Карточки не загрузились — не трогаем таблицу, иначе данные за день очистятся
+        if ranks_map is None:
+            print(f"⚠️ {city_name} на {date_obj.strftime('%d.%m.%Y')}: карточки не загрузились, таблица не изменена.")
+            return
 
         # ← исправлено: используются row_index, ranks_map, listings_map
         update_spreadsheet_data(
