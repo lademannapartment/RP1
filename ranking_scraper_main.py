@@ -59,24 +59,45 @@ async def process_date_for_city(
     checkout = checkin + dt.timedelta(days=STAY_NIGHTS)
     url = url_builder(checkin, checkout)
 
+    MAX_ATTEMPTS = 3  # комната считается не найденной, только если её нет во всех попытках
+
     try:
-        await page.goto(url, timeout=120000, wait_until="domcontentloaded")
-        await page.wait_for_load_state("networkidle")
-        await asyncio.sleep(2)
+        ranks_map = {name: None for name in listings_map}
+        mmrent_count = 0
+        loaded = False
 
-        # cookies
-        try:
-            cookie_btn = page.locator('button#onetrust-accept-btn-handler')
-            if await cookie_btn.is_visible(timeout=5000):
-                await cookie_btn.click()
-                print("🍪 Cookies закрыты.")
-        except:
-            pass
+        for attempt in range(1, MAX_ATTEMPTS + 1):
+            await page.goto(url, timeout=120000, wait_until="domcontentloaded")
+            await page.wait_for_load_state("networkidle")
+            await asyncio.sleep(2)
 
-        ranks_map, mmrent_count = await scrape_cards_and_get_ranks(page, listings_map)
+            # cookies
+            try:
+                cookie_btn = page.locator('button#onetrust-accept-btn-handler')
+                if await cookie_btn.is_visible(timeout=5000):
+                    await cookie_btn.click()
+                    print("🍪 Cookies закрыты.")
+            except:
+                pass
 
-        # Карточки не загрузились — не трогаем таблицу, иначе данные за день очистятся
-        if ranks_map is None:
+            attempt_ranks, attempt_mmrent = await scrape_cards_and_get_ranks(page, listings_map)
+            if attempt_ranks is None:
+                print(f"   ↻ Попытка {attempt}/{MAX_ATTEMPTS}: карточки не загрузились.")
+                continue
+
+            loaded = True
+            mmrent_count = attempt_mmrent
+            for name, rank in attempt_ranks.items():
+                if ranks_map[name] is None and rank is not None:
+                    ranks_map[name] = rank
+
+            missing = [n for n, r in ranks_map.items() if r is None]
+            if not missing:
+                break
+            print(f"   ↻ Попытка {attempt}/{MAX_ATTEMPTS}: не найдено {len(missing)} объектов, повтор.")
+
+        # Карточки не загрузились ни разу — не трогаем таблицу, иначе данные за день очистятся
+        if not loaded:
             print(f"⚠️ {city_name} на {date_obj.strftime('%d.%m.%Y')}: карточки не загрузились, таблица не изменена.")
             return
 
